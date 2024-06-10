@@ -99,7 +99,7 @@ namespace Sitecore.Sbos.Module.LinkTracker.sitecore.shell.Applications.Dialogs.E
 
         public List<Item> GetDefinitionItems(string path, string tempId)
         {
-            var context = Configuration.Factory.GetDatabase("master");
+            var context = Configuration.Factory.GetDatabase("web");
             Item item = context.SelectSingleItem(path);
             List<Item> items = item.Axes.GetDescendants().Where(x => x.TemplateID.ToString() == tempId).ToList();
             return items;

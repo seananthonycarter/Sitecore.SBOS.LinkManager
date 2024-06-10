@@ -62,7 +62,7 @@ namespace Sitecore.Sbos.Module.LinkTracker.Events.Processors
 
         private List<Item> GetDefinitionItems()
         {
-            var context = Configuration.Factory.GetDatabase("master");
+            var context = Configuration.Factory.GetDatabase("web");
             Item item = context.SelectSingleItem(this.DefinitionItemPath);
             List<Item> items = item.Axes.GetDescendants().Where(x => x.TemplateID.Equals(this.TemplateId)).ToList();
             return items;
