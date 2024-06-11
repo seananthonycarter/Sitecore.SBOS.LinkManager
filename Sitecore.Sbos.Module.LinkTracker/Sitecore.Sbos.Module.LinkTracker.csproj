@@ -463,6 +463,7 @@
     </Content>
     <Content Include="packages.config" />
     <Content Include="Events\Handler\TrackedLinkHandler.ashx" />
+    <Content Include="json.json" />
     <None Include="web.config" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>

@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using Sitecore.Pipelines.Save;
+using Sitecore.Security.Accounts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,8 @@ namespace Sitecore.Sbos.Module.LinkTracker.Events.Processors
         }
         public List<Item> GetDefinitionItems(string path, string tempId)
         {
-            var context = Configuration.Factory.GetDatabase("web");
+            var role = System.Configuration.ConfigurationManager.AppSettings["role:define"];
+            var context = Configuration.Factory.GetDatabase((role.Contains("Standalone") || role.Contains("ContentManagement") ? "master" : "web"));
             Item item = context.SelectSingleItem(path);
             List<Item> items = item.Axes.GetDescendants().Where(x => x.TemplateID.ToString() == tempId).ToList();
             return items;
