@@ -2,6 +2,7 @@
 using Sitecore.Diagnostics;
 using Sitecore.Pipelines.Save;
 using Sitecore.Security.Accounts;
+using Sitecore.StringExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,15 @@ namespace Sitecore.Sbos.Module.LinkTracker.Events.Processors
         public List<Item> GetDefinitionItems(string path, string tempId)
         {
             var role = System.Configuration.ConfigurationManager.AppSettings["role:define"];
-            var context = Configuration.Factory.GetDatabase((role.Contains("Standalone") || role.Contains("ContentManagement") ? "master" : "web"));
+            if (role.IsNullOrEmpty())
+            {
+                Log.Error($"Role is not defined", this);
+            }
+            else
+            {
+                Log.Debug($"Role is: {role}");
+            }
+            var context = Configuration.Factory.GetDatabase((role.Contains("Standalone") || role.Contains("ContentManagement") || role.IsNullOrEmpty() ? "master" : "web"));
             Item item = context.SelectSingleItem(path);
             List<Item> items = item.Axes.GetDescendants().Where(x => x.TemplateID.ToString() == tempId).ToList();
             return items;

@@ -4,7 +4,9 @@ using System.Reflection;
 using System.Xml;
 using Sitecore.Data;
 using Sitecore.Data.Items;
+using Sitecore.Diagnostics;
 using Sitecore.Pipelines;
+using Sitecore.StringExtensions;
 
 namespace Sitecore.Sbos.Module.LinkTracker.Events.Processors
 {
@@ -63,7 +65,16 @@ namespace Sitecore.Sbos.Module.LinkTracker.Events.Processors
         private List<Item> GetDefinitionItems()
         {
             var role = System.Configuration.ConfigurationManager.AppSettings["role:define"];
-            var context = Configuration.Factory.GetDatabase(role.Contains("Standalone") || role.Contains("ContentManagement") ? "master" : "web");
+            if (role.IsNullOrEmpty())
+            { 
+                Log.Error($"Role is not defined", this);
+            }
+            else
+            {
+                Log.Debug($"Role is: {role}");
+            }
+            
+            var context = Configuration.Factory.GetDatabase(role.Contains("Standalone") || role.Contains("ContentManagement") || role.IsNullOrEmpty() ? "master" : "web");
             Item item = context.SelectSingleItem(this.DefinitionItemPath);
             List<Item> items = item.Axes.GetDescendants().Where(x => x.TemplateID.Equals(this.TemplateId)).ToList();
             return items;
